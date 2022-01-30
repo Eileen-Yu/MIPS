@@ -33,8 +33,7 @@ std::map<int,std::string> itypeOps{
 };
 
 unsigned int getOpcode(unsigned int code) {
-  unsigned int opcode = (code & 0xFC000000) >> 26;
-  return opcode;
+  return (code & 0xFC000000) >> 26;
 }
 
 // transfer RType funct code to name
@@ -50,24 +49,20 @@ std::string getITypeOp(unsigned int code) {
 
 
 unsigned int parseRD(unsigned int code) {
-  unsigned int rd = (code & 0x0000F800) >> 11;
-  return rd;
+  return (code & 0x0000F800) >> 11;
 }
 
 unsigned int parseRS(unsigned int code) {
-  unsigned int rs = (code & 0x03E00000) >> 21;
-  return rs;
+  return (code & 0x03E00000) >> 21;
 }
 
 unsigned int parseRT(unsigned int code) {
-  unsigned int rt = (code & 0x001F0000) >> 16;
-  return rt;
+  return (code & 0x001F0000) >> 16;
 }
 
 // FIXME: Is func value signed?
 unsigned int getFuncValue(unsigned int code) {
-  unsigned int funcValue = code & 0x0000003F;
-  return funcValue;
+  return code & 0x0000003F;
 }
 
 short getSignExtImm(unsigned int code) {
@@ -77,7 +72,6 @@ short getSignExtImm(unsigned int code) {
 
 void decodeRType(unsigned int code) {
   int funcValue = getFuncValue(code);
-
   std::string op = getRTypeOp(funcValue);
 
   unsigned int rd = parseRD(code);
@@ -100,18 +94,16 @@ void decodeIType(unsigned int code, unsigned int addr) {
   unsigned int rs = parseRS(code);
   short signExtImm  = getSignExtImm(code);
 
-  if(op.compare("bne") != 0 && op.compare("beq") != 0){
+  if(op.compare("bne") == 0 || op.compare("beq") == 0){
+    unsigned int BTA = calculateBTA(addr,signExtImm);
+    printf("%s $%d, $%d address %X \n",op.c_str(),rs,rt,BTA);
+  } else {
     printf("%s $%d, %d($%d)\n",op.c_str(),rt,signExtImm,rs);
-    return;
   }
-
-  unsigned int BTA = calculateBTA(addr,signExtImm);
-  printf("%s $%d, $%d address %X \n",op.c_str(),rs,rt,BTA);
 }
 
 
 void disassemble(unsigned int code,unsigned int addr) {
-
   unsigned int opcode = getOpcode(code);
 
   switch(opcode) {
