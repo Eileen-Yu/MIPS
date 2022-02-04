@@ -17,7 +17,7 @@ unsigned int INPUT_CODE [] = {
   0x8ECDFFF0
 };
 
-std::map<int, std::string> rtypeOps{
+std::map<int, std::string> rtypeOps {
   { 0x20, "add" },
   { 0x22, "sub" },
   { 0x24, "and" },
@@ -25,7 +25,7 @@ std::map<int, std::string> rtypeOps{
   { 0x2A, "slt" },
 };
 
-std::map<int,std::string> itypeOps{
+std::map<int,std::string> itypeOps {
   {0x23, "lw"},
   {0x2B, "sw"},
   {0x4, "beq"},
@@ -47,7 +47,6 @@ std::string getITypeOp(unsigned int code) {
   return itypeOps.at(opCode);
 }
 
-
 unsigned int parseRD(unsigned int code) {
   return (code & 0x0000F800) >> 11;
 }
@@ -60,7 +59,6 @@ unsigned int parseRT(unsigned int code) {
   return (code & 0x001F0000) >> 16;
 }
 
-// FIXME: Is func value signed?
 unsigned int getFuncValue(unsigned int code) {
   return code & 0x0000003F;
 }
@@ -101,7 +99,6 @@ void decodeIType(unsigned int code, unsigned int addr) {
     printf("%s $%d, %d($%d)\n",op.c_str(),rt,signExtImm,rs);
   }
 }
-
 
 void disassemble(unsigned int code,unsigned int addr) {
   unsigned int opcode = getOpcode(code);
